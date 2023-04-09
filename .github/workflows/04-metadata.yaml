@@ -12,7 +12,7 @@ jobs:
       - name: Common Vulnerabilities and Exposures
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: ${{github.run_id}}
+          image-ref: 'niko123/test:${{ github.sha }}'
           exit-code: 0
           format: table
       - name: Docker Meta
@@ -24,8 +24,7 @@ jobs:
           tags: |
             type=raw,value=04 
             type=raw,value=latest, enable=${{github.event_name=='push' && github.ref=='refs/heads/main'}}
-            type=raw, value=${{github.sha}} 
-            type=raw, value=${{github.run_id}} 
+            type=raw, value=${{ github.sha }}  
             type=ref,event=pr
             type=ref,event=branch
             type=semver,pattern={{version}} 

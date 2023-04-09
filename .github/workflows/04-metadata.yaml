@@ -9,11 +9,6 @@ jobs:
     name: Image name
     runs-on: ubuntu-22.04
     steps:
-      - name: Debug
-        run: |
-          echo "github.event_name=${{github.event_name}}"
-          echo "github.event.pull_request.merged=${{github.event.pull_request.merged}}"
-          echo "github.ref=${{github.ref}}"
       - name: Docker Meta
         id: docker_meta
         uses: docker/metadata-action@v4
@@ -23,7 +18,7 @@ jobs:
           tags: |
             type=raw,value=04 
             type=raw,value=latest, enable=${{github.event_name=='push' && github.ref=='refs/heads/main'}}
-            type=raw, value=${{github.sha}} 
+            type=raw, value=${{ github.sha }}  
             type=ref,event=pr
             type=ref,event=branch
             type=semver,pattern={{version}} 
@@ -49,3 +44,10 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           platforms: linux/amd64,linux/arm64,linux/arm/v7
+          
+      - name: Common Vulnerabilities and Exposures
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'niko123/test:${{ github.sha }}'
+          exit-code: 0
+          format: table

@@ -9,6 +9,19 @@ jobs:
     name: Image name
     runs-on: ubuntu-22.04
     steps:
+      - name: Docker Meta
+        id: docker_meta
+        uses: docker/metadata-action@v4
+        with:
+          images: bretfisher/allhands22
+          flavor: latest=false
+          tags: |
+            type=raw,value=04 
+            type=raw,value=latest, enable=${{endsWith(github.ref, github.event.repository)}}
+            type=ref,event=pr
+            type=ref,event=branch
+            type=semver,pattern={{version}} 
+
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v1
         
@@ -24,8 +37,9 @@ jobs:
       - name: Docker Build  
         uses: docker/build-push-action@v3
         with:
-          push: ${{github.event_name != 'pull_request'}}
-          tags: niko123/httpenv-example-1
+          push: true
+          tags: ${{steps.docker_meta.outputs.tags}}
+          labels: ${{steps.docker_meta.outputs.labels}}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           platforms: linux/amd64,linux/arm64,linux/arm/v7

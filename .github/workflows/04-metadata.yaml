@@ -9,12 +9,6 @@ jobs:
     name: Image name
     runs-on: ubuntu-22.04
     steps:
-      - name: Common Vulnerabilities and Exposures
-        uses: aquasecurity/trivy-action@master
-        with:
-          image-ref: 'niko123/test:${{ github.sha }}'
-          exit-code: 0
-          format: table
       - name: Docker Meta
         id: docker_meta
         uses: docker/metadata-action@v4
@@ -50,3 +44,10 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           platforms: linux/amd64,linux/arm64,linux/arm/v7
+          
+      - name: Common Vulnerabilities and Exposures
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'niko123/test:${{ github.sha }}'
+          exit-code: 0
+          format: table

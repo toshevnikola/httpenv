@@ -25,6 +25,7 @@ jobs:
             type=raw,value=04 
             type=raw,value=latest, enable=${{github.event_name=='push' && github.ref=='refs/heads/main'}}
             type=raw, value=${{github.sha}} 
+            type=raw, value=${{github.run_id}} 
             type=ref,event=pr
             type=ref,event=branch
             type=semver,pattern={{version}} 
